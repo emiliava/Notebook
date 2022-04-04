@@ -40,6 +40,9 @@ library(RColorBrewer)
 data = read.csv("BDHE.csv") # please ensure the filename is correct and in the same folder as R script # nolint
 View(data) # view that contents from file have been correctly loaded
 
+# Drop the BDHE column
+data <- data[-c(1)]
+
 data$Abstract <- as.character(data$Abstract)
 data$Title <- as.character(data$Title)
 data$DocNumber<- as.character(data$DocNumber)
@@ -49,7 +52,7 @@ data$DocNumber<- as.character(data$DocNumber)
 #select the lines 39-44 and run the selection
 corp <- corpus(data, text_field = 'Abstract')
 corp <- corpus_reshape(corp, to = "paragraphs")
-
+#tokens(corp) %>% 
 dfm <- dfm(corp)
 dfm <- dfm_remove(dfm, remove_punct=T, remove=stopwords("english"), remove_numbers = TRUE)
 dfm <- dfm_trim(dfm, min_docfreq = 5)
@@ -120,7 +123,7 @@ import_mat = import_mat[ row_sums(import_mat) > 0, ]
 # topics are words clustered together
 # select lines 106-115 and run it together. 
 dtm = convert(dfm, to = "topicmodels") 
-#set.seed(1234)
+set.seed(1234)
 #you can change the value of k, i.e. number of topics you want the program to find
 m = LDA(dtm, method = "Gibbs", k = 7,  control = list(seed = 1234, burnin = 1000, 
                                                       thin = 100, iter = 1000))
